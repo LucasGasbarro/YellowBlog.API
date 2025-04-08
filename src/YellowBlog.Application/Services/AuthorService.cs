@@ -1,11 +1,11 @@
-﻿using YellowBlog.Application.DTOs;
+﻿using YellowBlog.Application.DTOs.AuthorDto;
 using YellowBlog.Application.Interfaces;
 using YellowBlog.Domain.Entities;
 using YellowBlog.Domain.Interfaces;
 
 namespace YellowBlog.Application.Services
 {
-    public  class AuthorService : IAuthorService
+    public class AuthorService : IAuthorService
     {
         private readonly IAuthorRepository _authorRepository;
         public AuthorService(IAuthorRepository authorRepository)
@@ -13,14 +13,26 @@ namespace YellowBlog.Application.Services
             _authorRepository = authorRepository;
         }
 
-        public async Task<int> CreateAuthorAsync(AuthorDto authorDto)
+        public async Task<int> CreateAuthorAsync(AuthorDtoInput authorDto)
         {
-            Author author = new Author
-            {
-                Name = authorDto.Name
-            };
-
+            Author author = authorDto;
             return await _authorRepository.InsertAsync(author);
+        }
+
+        public async Task<List<AuthorDtoResponse>> GetAllAsync()
+        {
+            List<Author> authors = await _authorRepository.GetAllAsync();
+            List<AuthorDtoResponse> authorsDtos = new List<AuthorDtoResponse>();
+            foreach (var author in authors)
+            {
+                authorsDtos.Add(author);
+            }
+            return authorsDtos;
+        }
+
+        public async Task<AuthorDtoResponse> GetByIdAsync(int id)
+        {
+            return await _authorRepository.GetByIdAsync(id);
         }
     }
 }

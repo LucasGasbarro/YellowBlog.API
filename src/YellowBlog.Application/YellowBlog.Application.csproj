@@ -1,6 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <None Include="DTOs\AuthorDto\AuthorDtoRequest.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\YellowBlog.Domain\YellowBlog.Domain.csproj" />
   </ItemGroup>
 

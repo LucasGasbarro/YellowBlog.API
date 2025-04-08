@@ -1,4 +1,5 @@
-﻿using YellowBlog.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using YellowBlog.Domain.Entities;
 using YellowBlog.Domain.Interfaces;
 using YellowBlog.Infrastructure.Context;
 
@@ -12,30 +13,22 @@ namespace YellowBlog.Infrastructure.Repositories
             _context = context;
         }
 
-        public Task<List<Author>> GetAllAsync()
+        public async Task<List<Author>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Authors.AsNoTracking().OrderBy(x => x.Id).ToListAsync();
         }
 
-        public Task<Author> GetByIdAsync(int id)
+        public async Task<Author> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Authors.AsNoTracking().FirstAsync(x => x.Id == id);
         }
 
         public async Task<int> InsertAsync(Author author)
         {
-            try
-            {
-                _context.Authors.Add(author);
-                await _context.SaveChangesAsync();
-                return author.Id;
-            }
-            catch (Exception ex)
-            {
+            _context.Authors.Add(author);
+            await _context.SaveChangesAsync();
+            return author.Id;
 
-                throw;
-            }
-            
         }
     }
 }

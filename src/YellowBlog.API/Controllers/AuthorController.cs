@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using YellowBlog.Application.DTOs;
+using YellowBlog.Application.DTOs.AuthorDto;
 using YellowBlog.Application.Interfaces;
 using YellowBlog.Application.Services;
 
@@ -16,11 +16,50 @@ namespace YellowBlog.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAuthor([FromBody] AuthorDto request)
+        [Route("add")]
+        public async Task<IActionResult> CreateAuthor([FromBody] AuthorDtoInput request)
         {
             var id = await _authorService.CreateAuthorAsync(request);
             return CreatedAtAction(nameof(CreateAuthor), new { id }, new { id });
+        }
 
+        [HttpGet]
+        [Route("all")]
+        public async Task<IActionResult> GetAllAuthors()
+        {
+            try
+            {
+                var authors = await _authorService.GetAllAsync();
+                if (authors != null && authors.Any())
+                    return Ok(authors);
+                else
+                    return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.InnerException + "\n" + ex.Message);
+            }
+            
+        }
+
+        [HttpGet]
+        [Route("id/{id}")]
+        public async Task<IActionResult> GetById([FromRoute] int id)
+        {
+            try
+            {
+                AuthorDtoResponse author = await _authorService.GetByIdAsync(id);
+
+                if (author != null)
+                    return Ok(author);
+                else
+                    return NotFound();
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.InnerException + "\n" + ex.Message);
+            }
         }
     }
 }
